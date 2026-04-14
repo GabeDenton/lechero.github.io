@@ -3,13 +3,1222 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gabe Denton</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Gabriel James Denton I</title>
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-2: #0d1130;
+      --text: #f5f7ff;
+      --muted: #b7bfdc;
+      --orange: #ff7a18;
+      --blue: #3b82f6;
+      --pink: #ff4fd8;
+      --purple: #7c3aed;
+      --cyan: #22d3ee;
+      --green: #67e8a5;
+      --glass: rgba(255,255,255,0.08);
+      --border: rgba(255,255,255,0.14);
+      --shadow: 0 25px 80px rgba(0,0,0,0.42);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,79,216,0.18), transparent 18%),
+        radial-gradient(circle at 80% 10%, rgba(34,211,238,0.16), transparent 18%),
+        radial-gradient(circle at 70% 70%, rgba(124,58,237,0.20), transparent 24%),
+        linear-gradient(180deg, #040816 0%, #091022 30%, #070a18 100%);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    body.loaded .intro-overlay {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 1s ease, visibility 1s ease;
+    }
+
+    body.loaded .main-site {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+
+    body.exploding .intro-button {
+      animation: blastAway 0.9s cubic-bezier(.2,.8,.1,1) forwards;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.06;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.5) 0.4px, transparent 0.8px),
+        radial-gradient(circle at 70% 50%, rgba(255,255,255,0.4) 0.4px, transparent 0.8px);
+      background-size: 24px 24px, 34px 34px;
+      mix-blend-mode: screen;
+      z-index: 200;
+    }
+
+    .floating-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(12px);
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 0;
+      animation: drift 16s ease-in-out infinite alternate;
+    }
+
+    .orb-1 {
+      width: 220px;
+      height: 220px;
+      background: var(--pink);
+      top: 8%;
+      left: -60px;
+    }
+
+    .orb-2 {
+      width: 300px;
+      height: 300px;
+      background: var(--blue);
+      top: 40%;
+      right: -120px;
+      animation-duration: 20s;
+    }
+
+    .orb-3 {
+      width: 240px;
+      height: 240px;
+      background: var(--orange);
+      bottom: 10%;
+      left: 15%;
+      animation-duration: 22s;
+    }
+
+    .intro-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at 50% 40%, rgba(124,58,237,0.35), transparent 30%),
+        radial-gradient(circle at 30% 70%, rgba(255,122,24,0.28), transparent 24%),
+        radial-gradient(circle at 70% 30%, rgba(34,211,238,0.24), transparent 24%),
+        rgba(3, 6, 17, 0.94);
+      overflow: hidden;
+    }
+
+    .intro-overlay::before,
+    .intro-overlay::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.12);
+      animation: pulseRing 4s linear infinite;
+    }
+
+    .intro-overlay::before {
+      width: 420px;
+      height: 420px;
+    }
+
+    .intro-overlay::after {
+      width: 640px;
+      height: 640px;
+      animation-delay: 1.5s;
+    }
+
+    .intro-center {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .intro-kicker {
+      text-transform: uppercase;
+      letter-spacing: 0.32em;
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin-bottom: 22px;
+    }
+
+    .intro-button {
+      position: relative;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      color: white;
+      font-weight: 900;
+      font-size: 1.2rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,0.85), rgba(255,255,255,0.15) 16%, transparent 18%),
+        conic-gradient(from 0deg, var(--orange), var(--pink), var(--purple), var(--blue), var(--cyan), var(--orange));
+      box-shadow:
+        0 0 0 10px rgba(255,255,255,0.04),
+        0 0 90px rgba(59,130,246,0.35),
+        0 0 140px rgba(255,79,216,0.24),
+        inset 0 0 40px rgba(255,255,255,0.14);
+      animation: spinHalo 10s linear infinite, buttonFloat 2.8s ease-in-out infinite;
+      isolation: isolate;
+      overflow: visible;
+    }
+
+    .intro-button::before,
+    .intro-button::after {
+      content: "";
+      position: absolute;
+      inset: -16px;
+      border-radius: 50%;
+      border: 2px dashed rgba(255,255,255,0.14);
+      animation: spinReverse 12s linear infinite;
+    }
+
+    .intro-button::after {
+      inset: -34px;
+      border-style: solid;
+      border-width: 1px;
+      opacity: 0.5;
+      animation-duration: 16s;
+    }
+
+    .intro-sub {
+      margin-top: 26px;
+      color: var(--muted);
+      max-width: 540px;
+      font-size: 0.98rem;
+    }
+
+    .particle-burst {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .particle {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: white;
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.2);
+    }
+
+    body.exploding .particle {
+      animation: burst var(--dur) cubic-bezier(.12,.7,.2,1) forwards;
+      animation-delay: var(--delay);
+      background: var(--color);
+    }
+
+    .main-site {
+      position: relative;
+      z-index: 1;
+      opacity: 0;
+      transform: scale(1.03);
+      filter: blur(8px);
+      transition: opacity 1s ease 0.25s, transform 1s ease 0.25s, filter 1s ease 0.25s;
+    }
+
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      backdrop-filter: blur(18px);
+      background: linear-gradient(90deg, rgba(255,122,24,0.12), rgba(59,130,246,0.10), rgba(255,79,216,0.10));
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .topbar-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 16px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      background: linear-gradient(90deg, var(--orange), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .nav a {
+      color: var(--muted);
+      font-size: 0.94rem;
+      transition: color 0.25s ease, transform 0.25s ease;
+    }
+
+    .nav a:hover {
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    section {
+      position: relative;
+      padding: 120px 20px;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero {
+      min-height: 100vh;
+      padding-top: 92px;
+      display: grid;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 38px;
+      align-items: center;
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 2;
+    }
+
+    .mini-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      margin-bottom: 20px;
+      color: var(--muted);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-title {
+      margin: 0;
+      font-size: clamp(3rem, 8vw, 7rem);
+      line-height: 0.9;
+      letter-spacing: -0.06em;
+      text-wrap: balance;
+    }
+
+    .hero-title .gradient {
+      display: block;
+      background: linear-gradient(90deg, var(--orange), var(--pink), var(--blue), var(--cyan));
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 6s linear infinite;
+    }
+
+    .hero-copy p {
+      max-width: 620px;
+      color: var(--muted);
+      font-size: 1.08rem;
+      margin-top: 22px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+
+    .button {
+      padding: 14px 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.14);
+      font-weight: 700;
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    }
+
+    .button:hover {
+      transform: translateY(-3px) scale(1.02);
+      border-color: rgba(255,255,255,0.28);
+    }
+
+    .button.primary {
+      background: linear-gradient(90deg, rgba(255,122,24,0.22), rgba(59,130,246,0.22), rgba(255,79,216,0.18));
+    }
+
+    .button.secondary {
+      background: rgba(255,255,255,0.05);
+      color: var(--muted);
+    }
+
+    .hero-stage {
+      position: relative;
+      min-height: 720px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-image-wrap {
+      position: relative;
+      width: min(880px, 100%);
+      aspect-ratio: 16 / 11;
+      border-radius: 34px;
+      overflow: hidden;
+      box-shadow: 0 30px 100px rgba(0,0,0,0.45);
+      border: 1px solid rgba(255,255,255,0.12);
+      transform: rotate(-2deg);
+      background: #000;
+    }
+
+    .hero-image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      filter: saturate(1.08) contrast(1.06);
+      animation: slowZoom 14s ease-in-out infinite alternate;
+    }
+
+    .hero-image-wrap::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0.08), transparent 30%, rgba(0,0,0,0.25)),
+        radial-gradient(circle at 20% 20%, rgba(255,122,24,0.22), transparent 22%),
+        radial-gradient(circle at 80% 40%, rgba(59,130,246,0.22), transparent 20%);
+      pointer-events: none;
+    }
+
+    .floating-card {
+      position: absolute;
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(5,10,24,0.6);
+      border: 1px solid rgba(255,255,255,0.14);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      max-width: 220px;
+      animation: bob 5s ease-in-out infinite;
+    }
+
+    .floating-card strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 1rem;
+    }
+
+    .floating-card span {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .fc-1 {
+      top: 4%;
+      left: -4%;
+    }
+
+    .fc-2 {
+      bottom: 10%;
+      right: -5%;
+      animation-delay: 1s;
+    }
+
+    .fc-3 {
+      top: 52%;
+      right: 8%;
+      animation-delay: 2s;
+    }
+
+    .scroll-epic {
+      position: absolute;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      z-index: 3;
+      text-align: center;
+      color: var(--muted);
+      animation: bob 2.6s ease-in-out infinite;
+    }
+
+    .scroll-epic .arrow {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 1.6rem;
+      color: white;
+    }
+
+    .section-heading {
+      margin-bottom: 34px;
+    }
+
+    .section-kicker {
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      font-size: 0.8rem;
+      color: var(--cyan);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(2.4rem, 5vw, 4.2rem);
+      letter-spacing: -0.05em;
+      margin: 0 0 14px;
+      text-wrap: balance;
+    }
+
+    .section-copy {
+      color: var(--muted);
+      max-width: 780px;
+      margin: 0;
+      font-size: 1.04rem;
+    }
+
+    .transition-rift {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: -140px;
+      height: 240px;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .transition-rift::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 80%, rgba(255,122,24,0.36), transparent 26%),
+        radial-gradient(circle at 80% 20%, rgba(59,130,246,0.36), transparent 24%),
+        radial-gradient(circle at 50% 50%, rgba(255,79,216,0.25), transparent 30%);
+      filter: blur(26px);
+      transform: scale(1.15);
+    }
+
+    .transition-rift::after {
+      content: "";
+      position: absolute;
+      left: -5%;
+      right: -5%;
+      bottom: -70px;
+      height: 180px;
+      background: linear-gradient(90deg, rgba(255,122,24,0.8), rgba(255,79,216,0.85), rgba(59,130,246,0.85), rgba(34,211,238,0.8));
+      border-radius: 50% 50% 0 0;
+      filter: blur(20px);
+      opacity: 0.4;
+    }
+
+    .career-section {
+      padding-top: 170px;
+      background:
+        radial-gradient(circle at 10% 30%, rgba(255,122,24,0.10), transparent 20%),
+        radial-gradient(circle at 90% 20%, rgba(59,130,246,0.12), transparent 24%),
+        linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    }
+
+    .career-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .glass-panel {
+      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px);
+    }
+
+    .career-panel {
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .career-panel::after {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,122,24,0.18), transparent 70%);
+      right: -90px;
+      top: -70px;
+      pointer-events: none;
+    }
+
+    .career-meta {
+      display: inline-flex;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
+      margin-bottom: 18px;
+      color: var(--orange);
+      font-weight: 700;
+    }
+
+    .career-panel h3 {
+      font-size: 1.9rem;
+      margin: 0 0 14px;
+    }
+
+    .career-panel p {
+      color: var(--muted);
+      margin: 0 0 18px;
+      font-size: 1rem;
+    }
+
+    .career-list {
+      display: grid;
+      gap: 12px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .career-list li {
+      position: relative;
+      padding: 16px 16px 16px 48px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      color: var(--muted);
+    }
+
+    .career-list li::before {
+      content: "⚡";
+      position: absolute;
+      left: 16px;
+      top: 14px;
+      font-size: 1.1rem;
+      color: var(--cyan);
+    }
+
+    .career-photo {
+      min-height: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .career-photo img {
+      width: 100%;
+      height: 100%;
+      min-height: 520px;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .career-photo::after {
+      content: "Elite Builder Services";
+      position: absolute;
+      left: 22px;
+      bottom: 22px;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(5,10,24,0.62);
+      border: 1px solid rgba(255,255,255,0.14);
+      backdrop-filter: blur(12px);
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .hobbies-section {
+      overflow: hidden;
+    }
+
+    .hobby-masonry {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 18px;
+    }
+
+    .hobby-card {
+      grid-column: span 4;
+      position: relative;
+      overflow: hidden;
+      border-radius: 26px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
+      box-shadow: var(--shadow);
+      transform: translateY(0) rotate(0deg);
+      transition: transform 0.28s ease, border-color 0.28s ease;
+      min-height: 280px;
+    }
+
+    .hobby-card:hover {
+      transform: translateY(-8px) rotate(-0.6deg);
+      border-color: rgba(255,255,255,0.26);
+    }
+
+    .hobby-card.large { grid-column: span 6; }
+    .hobby-card.tall { min-height: 420px; }
+
+    .hobby-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      transition: transform 0.5s ease;
+    }
+
+    .hobby-card:hover img {
+      transform: scale(1.06);
+    }
+
+    .hobby-overlay {
+      position: absolute;
+      inset: auto 0 0 0;
+      padding: 18px;
+      background: linear-gradient(180deg, transparent, rgba(3,6,17,0.86));
+    }
+
+    .hobby-overlay h3 {
+      margin: 0 0 6px;
+      font-size: 1.2rem;
+    }
+
+    .hobby-overlay p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .contact-section {
+      padding-bottom: 150px;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 0.92fr 1.08fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .contact-panel {
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact-panel::before {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(59,130,246,0.16), transparent 72%);
+      left: -100px;
+      bottom: -120px;
+      pointer-events: none;
+    }
+
+    .contact-list {
+      display: grid;
+      gap: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .contact-item {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.09);
+    }
+
+    .contact-label {
+      display: block;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--cyan);
+      margin-bottom: 8px;
+    }
+
+    .contact-value {
+      font-weight: 700;
+      color: white;
+      word-break: break-word;
+    }
+
+    .contact-photo {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact-photo img {
+      width: 100%;
+      height: 100%;
+      min-height: 520px;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .contact-photo::after {
+      content: "Let’s connect";
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(5,10,24,0.6);
+      border: 1px solid rgba(255,255,255,0.14);
+      backdrop-filter: blur(12px);
+      font-weight: 800;
+    }
+
+    footer {
+      padding: 0 20px 42px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px) scale(0.98);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    @keyframes buttonFloat {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-12px) scale(1.02); }
+    }
+
+    @keyframes spinHalo {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes spinReverse {
+      from { transform: rotate(360deg); }
+      to { transform: rotate(0deg); }
+    }
+
+    @keyframes pulseRing {
+      0% { transform: scale(0.7); opacity: 0; }
+      25% { opacity: 0.35; }
+      100% { transform: scale(1.2); opacity: 0; }
+    }
+
+    @keyframes blastAway {
+      0% { transform: scale(1) rotate(0deg); opacity: 1; filter: blur(0); }
+      30% { transform: scale(1.18) rotate(8deg); }
+      100% { transform: scale(2.8) rotate(34deg); opacity: 0; filter: blur(10px); }
+    }
+
+    @keyframes burst {
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) rotate(0deg) translateX(0) scale(0.4);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(var(--angle)) translateX(var(--distance)) scale(1.8);
+      }
+    }
+
+    @keyframes drift {
+      from { transform: translate3d(0, 0, 0); }
+      to { transform: translate3d(40px, -30px, 0); }
+    }
+
+    @keyframes slowZoom {
+      from { transform: scale(1.02); }
+      to { transform: scale(1.1); }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @media (max-width: 1100px) {
+      .hero-grid,
+      .career-grid,
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-stage {
+        min-height: auto;
+      }
+
+      .floating-card {
+        display: none;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .hobby-card,
+      .hobby-card.large {
+        grid-column: span 12;
+      }
+
+      .hero-image-wrap {
+        aspect-ratio: 4 / 5;
+        transform: none;
+      }
+
+      .intro-button {
+        width: 190px;
+        height: 190px;
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .topbar-inner {
+        padding: 14px 16px;
+      }
+
+      .nav {
+        gap: 12px;
+      }
+
+      section {
+        padding: 100px 16px;
+      }
+
+      .hero {
+        padding-top: 104px;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .career-panel,
+      .contact-panel {
+        padding: 22px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <main class="container">
-    <h1>Gabe Denton</h1>
-    <p>Programmer, builder, and someone who likes making ideas real.</p>
-  </main>
+  <div class="floating-orb orb-1"></div>
+  <div class="floating-orb orb-2"></div>
+  <div class="floating-orb orb-3"></div>
+  <div class="noise"></div>
+
+  <div class="intro-overlay" id="introOverlay">
+    <div class="particle-burst" aria-hidden="true">
+      <span class="particle" style="--angle: 0deg; --distance: 260px; --delay: 0.02s; --dur: 1.1s; --color: #ff7a18"></span>
+      <span class="particle" style="--angle: 18deg; --distance: 300px; --delay: 0.05s; --dur: 1.15s; --color: #ff4fd8"></span>
+      <span class="particle" style="--angle: 36deg; --distance: 280px; --delay: 0.03s; --dur: 1.1s; --color: #3b82f6"></span>
+      <span class="particle" style="--angle: 54deg; --distance: 330px; --delay: 0.08s; --dur: 1.25s; --color: #22d3ee"></span>
+      <span class="particle" style="--angle: 72deg; --distance: 260px; --delay: 0.01s; --dur: 1.12s; --color: #67e8a5"></span>
+      <span class="particle" style="--angle: 90deg; --distance: 340px; --delay: 0.06s; --dur: 1.2s; --color: #ff7a18"></span>
+      <span class="particle" style="--angle: 108deg; --distance: 310px; --delay: 0.04s; --dur: 1.14s; --color: #ff4fd8"></span>
+      <span class="particle" style="--angle: 126deg; --distance: 290px; --delay: 0.02s; --dur: 1.16s; --color: #3b82f6"></span>
+      <span class="particle" style="--angle: 144deg; --distance: 350px; --delay: 0.09s; --dur: 1.3s; --color: #22d3ee"></span>
+      <span class="particle" style="--angle: 162deg; --distance: 275px; --delay: 0.05s; --dur: 1.1s; --color: #67e8a5"></span>
+      <span class="particle" style="--angle: 180deg; --distance: 320px; --delay: 0.07s; --dur: 1.2s; --color: #ff7a18"></span>
+      <span class="particle" style="--angle: 198deg; --distance: 275px; --delay: 0.03s; --dur: 1.13s; --color: #ff4fd8"></span>
+      <span class="particle" style="--angle: 216deg; --distance: 300px; --delay: 0.08s; --dur: 1.2s; --color: #3b82f6"></span>
+      <span class="particle" style="--angle: 234deg; --distance: 355px; --delay: 0.02s; --dur: 1.28s; --color: #22d3ee"></span>
+      <span class="particle" style="--angle: 252deg; --distance: 280px; --delay: 0.05s; --dur: 1.1s; --color: #67e8a5"></span>
+      <span class="particle" style="--angle: 270deg; --distance: 340px; --delay: 0.03s; --dur: 1.22s; --color: #ff7a18"></span>
+      <span class="particle" style="--angle: 288deg; --distance: 300px; --delay: 0.01s; --dur: 1.12s; --color: #ff4fd8"></span>
+      <span class="particle" style="--angle: 306deg; --distance: 320px; --delay: 0.06s; --dur: 1.17s; --color: #3b82f6"></span>
+      <span class="particle" style="--angle: 324deg; --distance: 355px; --delay: 0.04s; --dur: 1.24s; --color: #22d3ee"></span>
+      <span class="particle" style="--angle: 342deg; --distance: 285px; --delay: 0.07s; --dur: 1.14s; --color: #67e8a5"></span>
+    </div>
+
+    <div class="intro-center">
+      <div class="intro-kicker">Enter the chaos</div>
+      <button class="intro-button" id="explodeButton">Open Bio</button>
+      <div class="intro-sub">Press the glowing core and let the page blow itself open into a full-on biography experience.</div>
+    </div>
+  </div>
+
+  <div class="main-site">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="#home">Gabriel James Denton I</a>
+        <nav class="nav">
+          <a href="#career">Career</a>
+          <a href="#hobbies">Hobbies</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" id="home">
+        <div class="container hero-grid">
+          <div class="hero-copy reveal visible">
+            <div class="mini-tag">200 IQ • MASTER CODER • PRO RL PLAYER</div>
+            <h1 class="hero-title">
+              Gabriel James
+              <span class="gradient">Denton I</span>
+            </h1>
+            <p>
+              Welcome to the loud version of a personal website. This is part bio, part digital fever dream, and part proof that a website can have way more personality than a plain résumé page ever could.
+            </p>
+            <div class="hero-actions">
+              <a class="button primary" href="#career">Dive Into Career</a>
+              <a class="button secondary" href="#hobbies">Jump to Hobbies</a>
+            </div>
+          </div>
+
+          <div class="hero-stage reveal visible">
+            <div class="hero-image-wrap">
+              <img src="Turbo charged dino ride(1).png" alt="Gabriel James Denton I riding a velociraptor" />
+            </div>
+
+            <div class="floating-card fc-1">
+              <strong>Lead Programmer</strong>
+              <span>6 years at Elite Builder Services</span>
+            </div>
+            <div class="floating-card fc-2">
+              <strong>Favorite energy</strong>
+              <span>Programming, games, pool, chaos</span>
+            </div>
+            <div class="floating-card fc-3">
+              <strong>Main character intro</strong>
+              <span>Obviously it had to be the raptor</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="scroll-epic">
+          Scroll for the dimensional shift
+          <div class="arrow">↓</div>
+        </div>
+      </section>
+
+      <section class="career-section" id="career">
+        <div class="transition-rift"></div>
+        <div class="container">
+          <div class="section-heading reveal">
+            <div class="section-kicker">Career arc</div>
+            <h2 class="section-title">From real-world work to systems thinking.</h2>
+            <p class="section-copy">
+              I’ve spent the last six years as a lead programmer at Elite Builder Services, building the kind of mindset that comes from solving actual day-to-day problems, not just abstract ones. I like messy processes, because buried inside them is usually something that can be made cleaner, smarter, and faster.
+            </p>
+          </div>
+
+          <div class="career-grid">
+            <article class="glass-panel career-panel reveal">
+              <div class="career-meta">Elite Builder Services • 6 Years</div>
+              <h3>Lead Programmer</h3>
+              <p>
+                My main job is leading programming work at Elite Builder Services. The part I enjoy most is taking a process that feels repetitive, annoying, or confusing and figuring out how to turn it into something smoother. That could mean better workflow logic, better internal tools, or just a smarter way to structure the work.
+              </p>
+              <ul class="career-list">
+                <li>Building useful systems that make real work easier.</li>
+                <li>Thinking hard about automation, efficiency, and clean problem solving.</li>
+                <li>Learning by creating, testing, improving, and repeating.</li>
+                <li>Bringing a builder mindset to both software and real-world operations.</li>
+              </ul>
+            </article>
+
+            <div class="glass-panel career-photo reveal">
+              <img src="IMG_20220930_104907.jpg" alt="Gabriel James Denton I holding an Elite Builder Services sign" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="hobbies-section" id="hobbies">
+        <div class="container">
+          <div class="section-heading reveal">
+            <div class="section-kicker">Off the clock</div>
+            <h2 class="section-title">The hobbies section needed to feel just as alive.</h2>
+            <p class="section-copy">
+              Outside of work, I like anything that feels competitive, technical, creative, or just fun with the right people. So instead of making this section feel neat and quiet, it leans into motion, color, and a little controlled chaos.
+            </p>
+          </div>
+
+          <div class="hobby-masonry">
+            <article class="hobby-card large tall reveal">
+              <img src="IMG_20251001_082028.jpg" alt="Gabriel working at a desk in a hoodie" />
+              <div class="hobby-overlay">
+                <h3>Programming</h3>
+                <p>Not just a job. It’s one of the main ways I like to think, build, and experiment.</p>
+              </div>
+            </article>
+
+            <article class="hobby-card reveal">
+              <img src="IMG_20251210_172116.jpg" alt="Gabriel wearing a Rocket League hoodie" />
+              <div class="hobby-overlay">
+                <h3>Rocket League</h3>
+                <p>Speed, mechanics, pressure, improvement. It checks all the right boxes.</p>
+              </div>
+            </article>
+
+            <article class="hobby-card reveal">
+              <img src="IMG_20250711_163106.jpg" alt="Gabriel playing pool at a bar" />
+              <div class="hobby-overlay">
+                <h3>Pool</h3>
+                <p>Precision, focus, angles, and that perfect mix of chill and competitive.</p>
+              </div>
+            </article>
+
+            <article class="hobby-card large reveal">
+              <img src="IMG_20251128_151811.jpg" alt="Gabriel with a drink and partner" />
+              <div class="hobby-overlay">
+                <h3>Good company</h3>
+                <p>Bars, food, laughs, and spending time with people who matter.</p>
+              </div>
+            </article>
+
+            <article class="hobby-card reveal">
+              <img src="IMG_20250821_114824.jpg" alt="Gabriel smiling at a desk with sunglasses on" />
+              <div class="hobby-overlay">
+                <h3>Humor</h3>
+                <p>Sometimes the best energy is just being dumb in the right way.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact-section" id="contact">
+        <div class="container">
+          <div class="section-heading reveal">
+            <div class="section-kicker">Contact zone</div>
+            <h2 class="section-title">You Found the End</h2>
+            <p class="section-copy">
+              Not really the end though. If you want to build something, ask something, or just say what’s up — here’s where to do it.
+            </p>
+          </div>
+
+          <div class="contact-grid">
+            <article class="glass-panel contact-panel reveal">
+              <div class="contact-list">
+                <div class="contact-item">
+                  <span class="contact-label">Phone</span>
+                  <span class="contact-value">(209) 672-8478</span>
+                </div>
+                <div class="contact-item">
+                  <span class="contact-label">Email</span>
+                  <span class="contact-value">gabedenton408@gmail.com</span>
+                </div>
+                <div class="contact-item">
+                  <span class="contact-label">Instagram</span>
+                  <span class="contact-value">@lechero209</span>
+                </div>
+                <div class="contact-item">
+                  <span class="contact-label">X / Twitter</span>
+                  <span class="contact-value">@milkman209_</span>
+                </div>
+                <div class="contact-item">
+                  <span class="contact-label">GitHub</span>
+                  <span class="contact-value">github.com/GabeDenton</span>
+                </div>
+              </div>
+            </article>
+
+            <div class="glass-panel contact-photo reveal">
+              <img src="IMG_20251128_151811.jpg" alt="Gabriel James Denton I with a drink" />
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      Built for Gabriel James Denton I • Loud on purpose
+    </footer>
+  </div>
+
+  <script>
+    const explodeButton = document.getElementById('explodeButton');
+    const body = document.body;
+    const revealItems = document.querySelectorAll('.reveal');
+
+    explodeButton.addEventListener('click', () => {
+      if (body.classList.contains('loaded')) return;
+      body.classList.add('exploding');
+
+      setTimeout(() => {
+        body.classList.add('loaded');
+      }, 520);
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, {
+      threshold: 0.14
+    });
+
+    revealItems.forEach((item) => observer.observe(item));
+
+    const heroImage = document.querySelector('.hero-image-wrap');
+    window.addEventListener('mousemove', (e) => {
+      if (!heroImage || window.innerWidth < 900) return;
+      const x = (e.clientX / window.innerWidth - 0.5) * 8;
+      const y = (e.clientY / window.innerHeight - 0.5) * -8;
+      heroImage.style.transform = `rotate(${-2 + x * 0.1}deg) translateY(${y * 0.5}px)`;
+    });
+  </script>
 </body>
 </html>
